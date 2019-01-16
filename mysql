@@ -1,0 +1,11 @@
+#! /bin/sh
+
+tty=false
+tty -s && tty=true
+docker run \
+    --tty="$tty" \
+    --interactive \
+    --rm \
+    --network webstack \
+    mariadb:10.3 \
+    sh -c "mysql $*"

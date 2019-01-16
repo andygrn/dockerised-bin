@@ -1,0 +1,40 @@
+#! /bin/sh
+
+realargs=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -C | -e | -f | -s | --color | --exclude | --format | --shell)
+            if [ "$realargs" = '' ]; then
+                realargs="$1 $2"
+            else
+                realargs="$realargs $1 $2"
+            fi
+            shift
+            ;;
+        -a | -V | -x | --check-sourced | --version | --external-sources | --color=* | --exclude=* | --format=* | --shell=*)
+            if [ "$realargs" = '' ]; then
+                realargs="$1"
+            else
+                realargs="$realargs $1"
+            fi
+            ;;
+        *)
+            non_option=$1
+            break 2
+            ;;
+    esac
+    shift
+done
+
+volume=$(dirname "$non_option")
+if [ "$volume" = '.' ]; then
+    volume=$PWD
+fi
+file=$(basename "$non_option")
+args="$realargs $file"
+
+docker run \
+    --rm \
+    --volume "$volume:/mnt" \
+    koalaman/shellcheck \
+    $args

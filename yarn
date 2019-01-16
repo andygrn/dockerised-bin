@@ -1,0 +1,16 @@
+#! /bin/sh
+
+mkdir -p /tmp/yarn-cache
+tty=false
+tty -s && tty=true
+docker run \
+    --tty="$tty" \
+    --interactive \
+    --rm \
+    --env SHELL=/bin/sh \
+    --publish 35729:35729 \
+    --volume /tmp/yarn-cache:/usr/local/share/.cache/yarn \
+    --volume "$PWD:/app" \
+    --workdir /app \
+    node:8 \
+    yarn "$@"

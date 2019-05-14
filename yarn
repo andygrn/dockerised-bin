@@ -12,5 +12,5 @@ docker run \
     --volume /tmp/yarn-cache:/usr/local/share/.cache/yarn \
     --volume "$PWD:/app" \
     --workdir /app \
-    node:12 \
+    node:8.16.0 \
     yarn "$@"

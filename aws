@@ -1,0 +1,15 @@
+#! /bin/sh
+
+ENV_FILE=~/.aws.env
+
+tty=false
+tty -s && tty=true
+docker run \
+    --tty="$tty" \
+    --interactive \
+    --rm \
+    --env-file=$ENV_FILE \
+    --volume "$PWD:/project" \
+    infrastructureascode/aws-cli \
+    aws "$@"
+

@@ -1,6 +1,20 @@
 #! /bin/sh
 
+if ! docker image inspect minica > /dev/null 2>&1; then
+    docker build --tag minica - <<EOF
+FROM golang:1.13.7-alpine3.11 AS build
+RUN apk add --no-cache git
+RUN go get github.com/jsha/minica
+
+FROM alpine:3.11
+COPY --from=build /go/bin/minica /usr/local/bin/minica
+RUN mkdir /output
+WORKDIR /output
+ENTRYPOINT ["minica"]
+EOF
+fi
+
 docker run \
     --rm \
     --volume "$PWD:/output" \
-    ryantk/minica "$@"
+    minica "$@"
